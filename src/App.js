@@ -33,7 +33,8 @@ function App() {
     let isValid = true;
     setError(null);
     if (isEmpty(task)) {
-      setError("Debes ingresar una Tarea");
+      
+      alert("Debes ingresar una Tarea");
       isValid = false;
     }
     return isValid;
@@ -126,10 +127,7 @@ function App() {
               {editMode ? "Guardar" : "Agregar"}
 
             </button>
-            {
-                error && <span className="text-danger mb-2">{error}</span>
-
-            }
+           
           </form>
         </div>
       </div>
