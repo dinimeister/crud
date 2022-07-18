@@ -7,31 +7,45 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [id, setId] = useState("");
+  const [error, setError] = useState(null);
 
-//guardar Tarea despues de editar
+  //guardar Tarea despues de editar
   const saveTask = (e) => {
     e.preventDefault();
     if (isEmpty(task)) {
-      console.log("task Empty");
+      if (!validForm()) {
+        return;
+      }
       return;
     }
 
-    const editedTasks = tasks.map(item => item.id === id ? {id, name: task} : item)
-    setTasks(editedTasks)
+    const editedTasks = tasks.map((item) =>
+      item.id === id ? { id, name: task } : item
+    );
+    setTasks(editedTasks);
     setEditMode(false);
     setTask("");
     setId("");
   };
 
-
-
   //Validacion de VACIO de agregar Tareas
+  const validForm = () => {
+    let isValid = true;
+    setError(null);
+    if (isEmpty(task)) {
+      setError("Debes ingresar una Tarea");
+      isValid = false;
+    }
+    return isValid;
+  };
+
   const addTask = (e) => {
     e.preventDefault();
-    if (isEmpty(task)) {
-      console.log("task Empty");
+
+    if (!validForm()) {
       return;
     }
+
     const newTask = {
       id: shortid.generate(),
       name: task,
@@ -41,16 +55,11 @@ function App() {
     setTask("");
   };
 
-
-
-
   //ELiminar Tareas
   const deleteTask = (id) => {
     const filteredTask = tasks.filter((task) => task.id !== id);
     setTasks(filteredTask);
   };
-
-
 
   //editar Tareas
   const editTask = (theTask) => {
@@ -67,7 +76,7 @@ function App() {
         <div className="col-8">
           <h4 className="text-center">Lista De Tareas</h4>
           {size(tasks) == 0 ? (
-            <h5 className="text-center">Aun no hay Tareas Programadas!</h5>
+            <li className="list-group-item">Aun no hay Tareas Programadas!</li>
           ) : (
             <ul className="list-group">
               {
@@ -105,6 +114,7 @@ function App() {
               onChange={(text) => setTask(text.target.value)}
               value={task}
             />
+            
             <button
               className={
                 editMode
@@ -114,7 +124,12 @@ function App() {
               type="submit"
             >
               {editMode ? "Guardar" : "Agregar"}
+
             </button>
+            {
+                error && <span className="text-danger mb-2">{error}</span>
+
+            }
           </form>
         </div>
       </div>
